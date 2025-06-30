@@ -23,10 +23,11 @@
 #include <QMap>
 #include <QFile>
 #include <QTimer>
+#include <QGroupBox>
+#include <QListWidget>
+#include <QSettings>
 #include "Api.h"
 #include "day7info.h"
-
-
 
 
 class MainWindow : public QMainWindow
@@ -39,16 +40,23 @@ public:
 
 public:
     void open7();
-    void openLiving();
     void handleWeatherData(const QByteArray &data);
     void handleWeatherData7d(const QByteArray &date);
-    void handleApiError(const QString &error);
+    void handleLifeIndexData(const QByteArray &data);
     void reSetInfo();
+    void saveFavorites();
+    void loadFavorites();
     QString getCityCode(const QString& cityName);
+
+private slots:
+    void addToFavorites();
+    void removeFromFavorites();
+    void onFavoriteClicked(QListWidgetItem *item);
 
 public:
     ApiCaller *m_apiCaller;
     ApiCaller *d7_apiCaller;
+    ApiCaller *Life_apiCaller;
     QLineEdit *LocationInfo;
     QLabel *Temper;
     QLabel *weather;
@@ -59,9 +67,18 @@ public:
     QLabel *Wetness;
     QLabel *Pressure;
     QLabel *TemMM;
+    QLabel *Sports;
+    QLabel *CarWash;
+    QLabel *Clothes;
+    QLabel *Comfort;
+    QLabel *ColdAttack;
+    QLabel *UVray;
+    QLabel *Drying;
     day7info *d7=nullptr;
-
-private:
     QTimer *timer;
+    QListWidget *favoritesList;
+    QPushButton *addFavoriteBtn;
+    QPushButton *removeFavoriteBtn;
+    QSettings *settings;
 };
 #endif // MAINWINDOW_H

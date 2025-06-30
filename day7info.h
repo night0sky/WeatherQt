@@ -20,6 +20,6 @@ public:
     QVector<QLabel*> TemMins;
     QVector<QLabel*> Winds;
 
-    QString CITY;
+    QLabel *dateTitle;
 };
 #endif //DAY7INFO_H
