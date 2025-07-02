@@ -30,13 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
     LocationInfo->setAlignment(Qt::AlignCenter);
     LocationInfo->setStyleSheet("background: white; color: black; border: 1px solid #D0D0D0; border-radius: 4px; padding: 4px;");
 
-    QLabel *Sunrise = new QLabel("日出", leftFrame);
+    QLabel *Sunrise = new QLabel("日出时间", leftFrame);
     SunriseTime = new QLabel(leftFrame);
     Sunrise->setStyleSheet("color: #555;");
     SunriseTime->setStyleSheet("font-weight: bold; color: #FF8C00;");
 
 
-    QLabel *Sunset = new QLabel("日落", leftFrame);
+    QLabel *Sunset = new QLabel("日落时间", leftFrame);
     SunsetTime = new QLabel(leftFrame);
     Sunset->setStyleSheet("color: #555;");
     SunsetTime->setStyleSheet("font-weight: bold; color: #FF4500;");
@@ -52,12 +52,58 @@ MainWindow::MainWindow(QWidget *parent)
     favoritesLabel->setStyleSheet("color: #555; font-weight: bold;");
 
     favoritesList = new QListWidget(leftFrame);
-    favoritesList->setStyleSheet(
-        "QListWidget {background-color: #F0F0F0;color: #00008B;border: 1px solid #D0D0D0;border-radius: 4px;padding: 4px;}"
-        "QListWidget::item {padding: 6px;border-bottom: 1px solid #F0F0F0;}"
-        "QListWidget::item:selected {background-color: #E3F2FD;color: #1976D2;}"
-    );
-    favoritesList->setMaximumHeight(150);
+
+    favoritesList->setStyleSheet(R"(
+
+    QListWidget {
+        background-color: #F0F0F0;
+        color: #00008B;
+        border: 1px solid #D0D0D0;
+        border-radius: 4px;
+        padding: 4px;
+    }
+
+    QListWidget::item {
+        padding: 6px;
+        border-bottom: 1px solid #F0F0F0;
+        color: #00008B;
+    }
+
+    QListWidget::item:selected {
+        background-color: #E3F2FD;
+        color: #1976D2;
+    }
+
+    QScrollBar:vertical {
+        width: 10px;
+        background: #f0f0f0;
+        margin: 0px;
+    }
+
+    QScrollBar::handle:vertical {
+        background: #c0c0c0;
+        min-height: 30px;
+        border-radius: 5px;
+    }
+
+    QScrollBar::handle:vertical:hover {
+        background: #a0a0a0;
+    }
+
+    QScrollBar::add-line:vertical,
+    QScrollBar::sub-line:vertical {
+        height: 0px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+
+    QScrollBar::add-page:vertical,
+    QScrollBar::sub-page:vertical {
+        background: #f0f0f0;
+    }
+)");
+
+    favoritesList->setMaximumHeight(200);
 
     addFavoriteBtn = new QPushButton("添加收藏", leftFrame);
     addFavoriteBtn->setStyleSheet(
@@ -72,15 +118,16 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
 
-
-
-
     // 中窗口控件
     Temper = new QLabel("加载中...", centerFrame);
     Temper->setStyleSheet("color: #2C3E50; font-weight: bold;");
 
     weather = new QLabel("天气", centerFrame);
     weather->setStyleSheet("color: #2C3E50; font-weight: bold;");
+
+
+
+
 
     QGroupBox *detailGroup = new QGroupBox("天气详情", centerFrame);
 
@@ -105,6 +152,8 @@ MainWindow::MainWindow(QWidget *parent)
     Pressure=new QLabel(detailGroup);
     Pressure->setStyleSheet("color: #8E44AD;");
 
+    Air=new QLabel(detailGroup);
+
     // 右窗口控件
     QLabel *TimeNow = new QLabel("",rightFrame);
     TimeNow->setStyleSheet("font-size: 16px; color: #2C3E50; font-weight: bold;");
@@ -116,7 +165,6 @@ MainWindow::MainWindow(QWidget *parent)
         "QGroupBox::title {subcontrol-origin: margin;padding: 0 8px;color: #4682B4;font-weight: bold;}"
     );
 
-    // 初始化生活指数标签
     Sports = new QLabel("运动指数: 加载中...", lifeIndexGroup);
     CarWash = new QLabel("洗车指数: 加载中...", lifeIndexGroup);
     Clothes = new QLabel("穿衣指数: 加载中...", lifeIndexGroup);
@@ -124,7 +172,7 @@ MainWindow::MainWindow(QWidget *parent)
     UVray = new QLabel("紫外线指数: 加载中...", lifeIndexGroup);
     Drying = new QLabel("晾晒指数: 加载中...", lifeIndexGroup);
 
-    // 设置生活指数标签样式
+    // 设置标签样式
     QString labelStyle = "QLabel {color: #2E8B57;padding: 5px;font-size: 13px;border-radius: 4px;background-color: rgba(255, 255, 255, 0.7);margin: 2px}";
     Sports->setStyleSheet(labelStyle);
     CarWash->setStyleSheet(labelStyle);
@@ -184,15 +232,18 @@ MainWindow::MainWindow(QWidget *parent)
     centerLay->addWidget(TemMM, 0, Qt::AlignCenter);
     centerLay->addSpacing(20);
 
+
     // 天气详情布局
     QGridLayout *detailLayout = new QGridLayout(detailGroup);
-    detailLayout->setContentsMargins(15, 15, 15, 15);
+    detailLayout->setContentsMargins(15, 20, 15, 20);
     detailLayout->setSpacing(15);
 
     detailLayout->addWidget(Feeling, 0, 0, Qt::AlignLeft);
     detailLayout->addWidget(windInfo, 0, 1, Qt::AlignLeft);
     detailLayout->addWidget(Wetness, 1, 0, Qt::AlignLeft);
     detailLayout->addWidget(Pressure, 1, 1, Qt::AlignLeft);
+    detailLayout->addWidget(Air, 2, 0, Qt::AlignLeft);
+
 
     // 添加垂直弹簧使详情框不会拉伸
     QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -201,6 +252,7 @@ MainWindow::MainWindow(QWidget *parent)
     detailGroup->setLayout(detailLayout);
     centerLay->addWidget(detailGroup, 1);
 
+    centerLay->setStretchFactor(detailGroup, 2);
     centerLay->addStretch(1);
 
 
@@ -244,7 +296,7 @@ MainWindow::MainWindow(QWidget *parent)
     wholeLay->setStretch(2, 2);
 
     // 设置窗口初始大小
-    resize(900, 550);
+    resize(900, 600);
 
     //字体
     QFont bigFont;
@@ -259,19 +311,24 @@ MainWindow::MainWindow(QWidget *parent)
     weather->setAlignment(Qt::AlignCenter);
 
     QFont smallFont;
-    smallFont.setPointSize(14);
+    smallFont.setPointSize(16);
     Feeling->setFont(smallFont);
     windInfo->setFont(smallFont);
     Wetness->setFont(smallFont);
     Pressure->setFont(smallFont);
     TemMM->setFont(smallFont);
+    Air->setFont(smallFont);
 
     connect(day7infoButton,&QPushButton::clicked,this,&MainWindow::open7);
     connect(reSet,&QPushButton::clicked,this,&MainWindow::reSetInfo);
 
     loadFavorites();
 
+
     // 连接信号槽
+    connect(LocationInfo,&QLineEdit::returnPressed,this,[=](){reSet->click();});
+    connect(reSet,&QPushButton::clicked,this,&MainWindow::reSetInfo);
+
     connect(addFavoriteBtn, &QPushButton::clicked, this, &MainWindow::addToFavorites);
     connect(removeFavoriteBtn, &QPushButton::clicked, this, &MainWindow::removeFromFavorites);
     connect(favoritesList, &QListWidget::itemClicked, this, &MainWindow::onFavoriteClicked);
@@ -284,12 +341,17 @@ MainWindow::MainWindow(QWidget *parent)
     d7_apiCaller=new ApiCaller(this);
     connect(d7_apiCaller,&ApiCaller::requestCompleted, this, &MainWindow::handleWeatherData7d);
 
+    Air_apiCaller=new ApiCaller(this);
+    connect(Air_apiCaller,&ApiCaller::requestCompleted,this,&MainWindow::handleAirData);
+
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [TimeNow](){
         TimeNow->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
     });
     timer->start(1000);
 
+    MainWindow::reSetInfo();
+    MainWindow::open7();
 }
 
 
@@ -320,8 +382,10 @@ void MainWindow::reSetInfo(){
     }
     QUrl url("https://na5n8kmhfn.re.qweatherapi.com/v7/weather/now?location="+city+"&key=34755a3426cd4aa9aef0d34160985cc5");
     QUrl urlLife("https://na5n8kmhfn.re.qweatherapi.com/v7/indices/1d?location="+city+"&type=0&key=34755a3426cd4aa9aef0d34160985cc5");
+    QUrl urlAir("https://na5n8kmhfn.re.qweatherapi.com/v7/air/now?location="+city+"&key=34755a3426cd4aa9aef0d34160985cc5");
     m_apiCaller->sendGetRequest(url);
     Life_apiCaller->sendGetRequest(urlLife);
+    Air_apiCaller->sendGetRequest(urlAir);
     if (d7) {
         QUrl url7("https://na5n8kmhfn.re.qweatherapi.com/v7/weather/7d?location="+city+"&key=34755a3426cd4aa9aef0d34160985cc5");
         d7_apiCaller->sendGetRequest(url7);
@@ -329,47 +393,47 @@ void MainWindow::reSetInfo(){
 }
 
 
+void MainWindow::handleAirData(const QByteArray &data)
+{
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+    QJsonObject rootObj = jsonDoc.object();
+
+    QJsonObject nowObj = rootObj["now"].toObject();
+
+    aqi=nowObj["aqi"].toString().toInt();
+
+    AirColor=MainWindow::getAirColor(aqi);
+
+    Air->setText("空气质量"+nowObj["category"].toString());
+    Air->setStyleSheet("color: "+AirColor+";");
+}
+
+
 void MainWindow::handleWeatherData(const QByteArray &data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    if (!doc.isNull() && doc.isObject()) {
-        QJsonObject json = doc.object();
+    QJsonObject json = doc.object();
 
-        if (json.contains("now") && json["now"].isObject()) {
-            QJsonObject nowObj = json["now"].toObject();
+    QJsonObject nowObj = json["now"].toObject();
 
-            if (nowObj.contains("temp")) {
-                QString tempStr = nowObj["temp"].toString();
-                bool ok;
-                int temp = tempStr.toInt(&ok);
-                if (ok) {
-                    Temper->setText(QString::number(temp) + "°C");
-                } else {
-                    Temper->setText(tempStr + "°C");
-                }
-            }
+    QString tempStr = nowObj["temp"].toString();
+    Temper->setText(QString::number(tempStr.toInt()) + "°C");
 
+    QString weatherText = nowObj["text"].toString();
+    weather->setText(weatherText);
 
-            QString weatherText = nowObj["text"].toString();
-            weather->setText(weatherText);
+    QString FeelingT="体感:  "+nowObj["feelsLike"].toString()+"°C";
+    Feeling->setText(FeelingT);
 
-            QString FeelingT="体感:  "+nowObj["feelsLike"].toString()+"°C";
-            Feeling->setText(FeelingT);
+    QString Windinfom=nowObj["windDir"].toString()+" "+nowObj["windScale"].toString()+"级";
+    windInfo->setText(Windinfom);
 
-            QString Windinfom=nowObj["windDir"].toString()+" "+nowObj["windScale"].toString()+"级";
-            windInfo->setText(Windinfom);
+    QString wetnessT="湿度:  "+nowObj["humidity"].toString()+"%";
+    Wetness->setText(wetnessT);
 
-            QString wetnessT="湿度:  "+nowObj["humidity"].toString()+"%";
-            Wetness->setText(wetnessT);
-
-            //百帕->kPa
-            QString pressureT="气压:  "+QString::number(nowObj["pressure"].toString().toDouble()/10.0)+"kPa";
-            Pressure->setText(pressureT);
-
-        } else {
-            QMessageBox::warning(this, "数据错误", "缺少'now'对象");
-        }
-    }
+    //百帕->kPa
+    QString pressureT="气压:  "+QString::number(nowObj["pressure"].toString().toDouble()/10.0)+"kPa";
+    Pressure->setText(pressureT);
 }
 
 QString MainWindow::getCityCode(const QString &cityName)
@@ -420,11 +484,6 @@ void MainWindow::handleLifeIndexData(const QByteArray &data) {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
     QJsonObject rootObj = jsonDoc.object();
 
-    // 检查 API 返回状态
-    if (rootObj["code"].toString() != "200") {
-        qDebug() << "生活指数 API 错误:" << rootObj["code"].toString();
-        return;
-    }
 
     // 获取生活指数数组
     QJsonArray dailyArray = rootObj["daily"].toArray();
@@ -466,6 +525,8 @@ void MainWindow::handleLifeIndexData(const QByteArray &data) {
     Drying->setText("晾晒衣物:  "+dryIndex["category"].toString());
 }
 
+
+
 void MainWindow::addToFavorites()
 {
     QString city = LocationInfo->text().trimmed();  //移除空白
@@ -477,7 +538,7 @@ void MainWindow::addToFavorites()
     // 检查城市代码是否存在
     QString cityCode = getCityCode(city);
     if (cityCode.isEmpty()) {
-        QMessageBox::warning(this, "提示", "未找到该城市代码");
+        QMessageBox::warning(this, "提示", "未找到该城市");
         return;
     }
 
@@ -535,13 +596,25 @@ void MainWindow::loadFavorites()
     QStringList favorites = settings->value("favorites").toStringList();
     for (const QString &fav : favorites) {
         QStringList parts = fav.split("|");
-        if (parts.size() >= 2) {
+        if (parts.size() >= 2) {;
             QListWidgetItem *item = new QListWidgetItem(parts[0]);
             item->setData(Qt::UserRole, parts[1]);
             favoritesList->addItem(item);
         }
     }
 }
+
+
+QString MainWindow::getAirColor(int aqi)
+{
+    if (aqi <= 50)  return "#4CAF50";  // 绿色-优
+    if (aqi <= 100) return "#FFC107";  // 黄色-良
+    if (aqi <= 150) return "#FF9800";  // 橙色-轻度污染
+    if (aqi <= 200) return "#F44336";  // 红色-中度污染
+    if (aqi <= 300) return "#9C27B0";  // 紫色-重度污染
+    return "#795548";  // 褐色-严重污染
+}
+
 
 MainWindow::~MainWindow(){
     if(d7)delete d7;

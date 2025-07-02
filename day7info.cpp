@@ -17,7 +17,7 @@ day7info::day7info(QWidget* parent):QWidget(parent){
 
     // 设置标题样式
     QString titleStyle = "QLabel { text-align: center;font-weight: bold; color: #2C3E50; background-color: #E1EAF7; padding: 8px; border-radius: 4px; }";
-    dateTitle->setStyleSheet(titleStyle);
+    dateTitle->setStyleSheet("QLabel {text-align: center;font-weight: bold; color: #2C3E50; background-color: #FFFACD; padding: 8px; border-radius: 4px;}");
     dayWeatherTitle->setStyleSheet(titleStyle);
     nightWeatherTitle->setStyleSheet(titleStyle);
     highTempTitle->setStyleSheet(titleStyle);
@@ -37,7 +37,7 @@ day7info::day7info(QWidget* parent):QWidget(parent){
 
         QLabel *nightWeather = new QLabel(this);
         nightWeather->setAlignment(Qt::AlignCenter);
-        nightWeather->setStyleSheet("QLabel { background-color: #EDEDFA;color: #A3A3D2; padding: 8px; border-radius: 4px; }");
+        nightWeather->setStyleSheet("QLabel { background-color: #EDEDFA;color: #6A6AC8; padding: 8px; border-radius: 4px; }");
         weathersN.push_back(nightWeather);
 
         QLabel *highTemp = new QLabel(this);

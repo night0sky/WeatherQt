@@ -26,6 +26,15 @@
 #include <QGroupBox>
 #include <QListWidget>
 #include <QSettings>
+#include <QScrollBar>
+#include <QSlider>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QTime>
+#include <QStyle>
+#include <QDir>
+#include <QCloseEvent>
+#include <QToolTip>
 #include "Api.h"
 #include "day7info.h"
 
@@ -43,10 +52,12 @@ public:
     void handleWeatherData(const QByteArray &data);
     void handleWeatherData7d(const QByteArray &date);
     void handleLifeIndexData(const QByteArray &data);
+    void handleAirData(const QByteArray &data);
     void reSetInfo();
     void saveFavorites();
     void loadFavorites();
     QString getCityCode(const QString& cityName);
+    QString getAirColor(int aqi);
 
 private slots:
     void addToFavorites();
@@ -57,6 +68,7 @@ public:
     ApiCaller *m_apiCaller;
     ApiCaller *d7_apiCaller;
     ApiCaller *Life_apiCaller;
+    ApiCaller *Air_apiCaller;
     QLineEdit *LocationInfo;
     QLabel *Temper;
     QLabel *weather;
@@ -66,6 +78,7 @@ public:
     QLabel *windInfo;
     QLabel *Wetness;
     QLabel *Pressure;
+    QLabel *Air;
     QLabel *TemMM;
     QLabel *Sports;
     QLabel *CarWash;
@@ -80,5 +93,8 @@ public:
     QPushButton *addFavoriteBtn;
     QPushButton *removeFavoriteBtn;
     QSettings *settings;
+
+    QString AirColor;
+    int aqi;
 };
 #endif // MAINWINDOW_H
